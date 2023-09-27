@@ -2,21 +2,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class Category
+public class TrainingTitle
 {
     [Key]
-    public int CategoryId { get; set; }
+    public int TrainingTitleId { get; set; }
     [Required]
 
     public string Name { get; set; }
 
-    [ForeignKey("TrainingTypeId")]
-    public int TrainingTypeId { get; set; }
+    [ForeignKey("CategoryId")]
+    public int CategoryId { get; set; }
 
     [ValidateNever]
-    public TrainingType TrainingType { get; set; }
+    public Category Category { get; set; }
 
     // Navigation property
     [ValidateNever]
-    public List<TrainingTitle> TrainingTitles { get; set; }
+    public List<Analysis> Analyses { get; set; }
 }

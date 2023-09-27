@@ -1,0 +1,113 @@
+﻿@model Syllabus
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h2>Create Syllabus</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label>Department</label>
+        <select id="departments" class="form-control">
+            <option value="">-- Select Department --</option>
+            @foreach (var department in ViewBag.Departments)
+            {
+                <option value="@department.DepartmentId">@department.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Training Type</label>
+        <select id="trainingTypes" class="form-control" disabled>
+            <option value="">-- Select Training Type --</option>
+            <!-- Options will be loaded by AJAX -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select id="categories" class="form-control" disabled>
+            <option value="">-- Select Category --</option>
+            <!-- Options will be loaded by AJAX -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Training Title</label>
+        <select id="trainingTitles" class="form-control" disabled>
+            <option value="">-- Select Training Title --</option>
+            <!-- Options will be loaded by AJAX -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Analysis</label>
+        <select asp-for="AnalysisId" class="form-control" disabled>
+            <option value="">-- Select Analysis --</option>
+            <!-- Options will be loaded by AJAX -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Content">Syllabus Content</label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+    </div>
+
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $("#departments").change(function () {
+                var departmentId = $(this).val();
+                fetchDropdownData(departmentId, "/Syllabus/GetTrainingTypesByDepartmentId", "#trainingTypes");
+            });
+
+            $("#trainingTypes").change(function () {
+                var trainingTypeId = $(this).val();
+                fetchDropdownData(trainingTypeId, "/Syllabus/GetCategoriesByTrainingTypeId", "#categories");
+            });
+
+            $("#categories").change(function () {
+                var categoryId = $(this).val();
+                fetchDropdownData(categoryId, "/Syllabus/GetTrainingTitlesByCategoryId", "#trainingTitles");
+            });
+
+            $("#trainingTitles").change(function () {
+                var trainingTitleId = $(this).val();
+                fetchDropdownData(trainingTitleId, "/Syllabus/GetAnalysesByTrainingTitleId", "#AnalysisId");
+            });
+        });
+
+        function fetchDropdownData(id, endpoint, dropdownSelector) {
+            if (id) {
+                $.ajax({
+                    url: endpoint + "/" + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        $(dropdownSelector).empty();
+                        $(dropdownSelector).append('<option value="">-- Select --</option>');
+                        $.each(data, function (key, entry) {
+                            $(dropdownSelector).append($('<option></option>').attr('value', entry.id).text(entry.name));
+                        });
+                        $(dropdownSelector).removeAttr("disabled");
+                    }
+                });
+            } else {
+                $(dropdownSelector).empty().attr("disabled", "disabled");
+            }
+        }
+
+    </script>
+}

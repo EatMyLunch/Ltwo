@@ -1,8 +1,52 @@
-﻿@{
+﻿@model TrainingType
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>HELLLLO WELCOME</h1>
+@*<div>
+    department
 </div>
+<div>
+    <select asp-for="DepartmentId" id="departmentId"
+            asp-items="@ViewBag.departments">
+        <option disabled selected>------</option>
+    </select>
+</div>
+<br />
+<br />
+<div>
+    training type
+</div>
+<div>
+    <select asp-for="Id" id="trainingTypeId"></select>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            getTrainingTypeByDepartmentId();
+        })
+        $("#departmentId").change(function () {
+            getTrainingTypeByDepartmentId();
+        });
+        var getTrainingTypeByDepartmentId = function () {
+            $.ajax({
+                url: '@Url.Action("GetTrainingTypeByDepartmentId", "Home")',
+                type:'GET',
+                data:{
+                    departmentId: $('#departmentId').val(),
+                },
+                success: function(data){
+                    $('#trainingTypeId').find('option').remove()
+                    $(data).each(
+                        function(index,item){
+                            $('#trainingTypeId').append('<option value="' + item.id + '">' + item.trainingTypeName+ '</option>')
+                        }
+                    );
+                }
+            })
+        }
+    </script>
+}*@
