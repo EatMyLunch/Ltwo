@@ -10,10 +10,8 @@ namespace LtwoWeb.Data
         {
         }
 
-        public DbSet<Analysis> Analyses { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Syllabus> Syllabuses { get; set; }
         public DbSet<TrainingTitle> TrainingTitles { get; set; }
         public DbSet<TrainingType> TrainingTypes { get; set; }
 

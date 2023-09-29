@@ -16,9 +16,17 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Syllabus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category.TrainingType.Department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category.TrainingType)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -26,6 +34,15 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Syllabus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.TrainingType.Department.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.TrainingType.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)

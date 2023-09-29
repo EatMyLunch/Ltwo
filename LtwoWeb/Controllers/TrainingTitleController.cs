@@ -21,7 +21,10 @@ namespace LtwoWeb.Controllers
         // GET: TrainingTitle
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.TrainingTitles.Include(t => t.Category);
+            var appDbContext = _context.TrainingTitles
+        .Include(t => t.Category)
+        .ThenInclude(c => c.TrainingType)
+        .ThenInclude(tt => tt.Department);
             return View(await appDbContext.ToListAsync());
         }
 

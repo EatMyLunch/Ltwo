@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LtwoWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230927060410_newmodel")]
-    partial class newmodel
+    [Migration("20230929030228_addviewmodeltwo")]
+    partial class addviewmodeltwo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,28 +23,6 @@ namespace LtwoWeb.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Analysis", b =>
-                {
-                    b.Property<int>("AnalysisId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnalysisId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TrainingTitleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnalysisId");
-
-                    b.HasIndex("TrainingTitleId");
-
-                    b.ToTable("Analyses");
-                });
 
             modelBuilder.Entity("Category", b =>
                 {
@@ -85,28 +63,6 @@ namespace LtwoWeb.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("Syllabus", b =>
-                {
-                    b.Property<int>("SyllabusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SyllabusId"));
-
-                    b.Property<int>("AnalysisId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SyllabusId");
-
-                    b.HasIndex("AnalysisId");
-
-                    b.ToTable("Syllabuses");
-                });
-
             modelBuilder.Entity("TrainingTitle", b =>
                 {
                     b.Property<int>("TrainingTitleId")
@@ -119,6 +75,10 @@ namespace LtwoWeb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Syllabus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -151,17 +111,6 @@ namespace LtwoWeb.Migrations
                     b.ToTable("TrainingTypes");
                 });
 
-            modelBuilder.Entity("Analysis", b =>
-                {
-                    b.HasOne("TrainingTitle", "TrainingTitle")
-                        .WithMany("Analyses")
-                        .HasForeignKey("TrainingTitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TrainingTitle");
-                });
-
             modelBuilder.Entity("Category", b =>
                 {
                     b.HasOne("TrainingType", "TrainingType")
@@ -171,17 +120,6 @@ namespace LtwoWeb.Migrations
                         .IsRequired();
 
                     b.Navigation("TrainingType");
-                });
-
-            modelBuilder.Entity("Syllabus", b =>
-                {
-                    b.HasOne("Analysis", "Analysis")
-                        .WithMany("Syllabuses")
-                        .HasForeignKey("AnalysisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Analysis");
                 });
 
             modelBuilder.Entity("TrainingTitle", b =>
@@ -206,11 +144,6 @@ namespace LtwoWeb.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Analysis", b =>
-                {
-                    b.Navigation("Syllabuses");
-                });
-
             modelBuilder.Entity("Category", b =>
                 {
                     b.Navigation("TrainingTitles");
@@ -219,11 +152,6 @@ namespace LtwoWeb.Migrations
             modelBuilder.Entity("LtwoWeb.Models.Department", b =>
                 {
                     b.Navigation("TrainingTypes");
-                });
-
-            modelBuilder.Entity("TrainingTitle", b =>
-                {
-                    b.Navigation("Analyses");
                 });
 
             modelBuilder.Entity("TrainingType", b =>

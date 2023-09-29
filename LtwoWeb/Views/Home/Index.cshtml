@@ -1,52 +1,129 @@
-﻿@model TrainingType
+﻿@using LtwoWeb.ViewModels
 
-@{
-    ViewData["Title"] = "Home Page";
-}
+@model CascadingDropdownsViewModel
 
-<h1>HELLLLO WELCOME</h1>
-@*<div>
-    department
-</div>
-<div>
-    <select asp-for="DepartmentId" id="departmentId"
-            asp-items="@ViewBag.departments">
-        <option disabled selected>------</option>
-    </select>
-</div>
-<br />
-<br />
-<div>
-    training type
-</div>
-<div>
-    <select asp-for="Id" id="trainingTypeId"></select>
-</div>
+<h2>Select Training Title to view Syllabus</h2>
+
+<form id="syllabusForm">
+    <div class="form-group">
+        <label>Department</label>
+        <select id="departments" class="form-control">
+            <option value="">-- Select --</option>
+            <!-- Populate this from your database -->
+            @foreach (var department in ViewBag.Departments)
+            {
+                <option value="@department.DepartmentId">@department.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Training Type</label>
+        <select id="trainingTypes" class="form-control" disabled>
+            <option value="">-- Select --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select id="categories" class="form-control" disabled>
+            <option value="">-- Select --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Training Title</label>
+        <select id="trainingTitles" class="form-control" disabled>
+            <option value="">-- Select --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Syllabus:</label>
+        <textarea id="syllabus" class="form-control" readonly></textarea>
+    </div>
+</form>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
-            getTrainingTypeByDepartmentId();
-        })
-        $("#departmentId").change(function () {
-            getTrainingTypeByDepartmentId();
-        });
-        var getTrainingTypeByDepartmentId = function () {
-            $.ajax({
-                url: '@Url.Action("GetTrainingTypeByDepartmentId", "Home")',
-                type:'GET',
-                data:{
-                    departmentId: $('#departmentId').val(),
-                },
-                success: function(data){
-                    $('#trainingTypeId').find('option').remove()
-                    $(data).each(
-                        function(index,item){
-                            $('#trainingTypeId').append('<option value="' + item.id + '">' + item.trainingTypeName+ '</option>')
-                        }
-                    );
+            $("#departments").change(function () {
+                var departmentId = $(this).val();
+                resetDropdown("#trainingTypes");
+                resetDropdown("#categories");
+                resetDropdown("#trainingTitles");
+                resetSyllabus();
+                if (departmentId) {
+                    fetchDropdownData(departmentId, "/Home/GetTrainingTypesByDepartmentId", "#trainingTypes");
                 }
-            })
+            });
+
+            $("#trainingTypes").change(function () {
+                var trainingTypeId = $(this).val();
+                resetDropdown("#categories");
+                resetDropdown("#trainingTitles");
+                resetSyllabus();
+                if (trainingTypeId) {
+                    fetchDropdownData(trainingTypeId, "/Home/GetCategoriesByTrainingTypeId", "#categories");
+                }
+            });
+
+            $("#categories").change(function () {
+                var categoryId = $(this).val();
+                resetDropdown("#trainingTitles");
+                resetSyllabus();
+                if (categoryId) {
+                    fetchDropdownData(categoryId, "/Home/GetTrainingTitlesByCategoryId", "#trainingTitles");
+                }
+            });
+
+            $("#trainingTitles").change(function () {
+                var trainingTitleId = $(this).val();
+                if (trainingTitleId) {
+                    $.ajax({
+                        url: "/Home/GetSyllabusByTrainingTitleId/" + trainingTitleId,
+                        type: "GET",
+                        dataType: "json",
+                        success: function (data) {
+                            $("#syllabus").val(data);
+                        },
+                        error: function () {
+                            alert('Failed to fetch syllabus. Please try again.');
+                        }
+                    });
+                } else {
+                    $("#syllabus").val(""); // Clear the syllabus field if no training title is selected
+                }
+            });
+        });
+
+        function fetchDropdownData(id, endpoint, dropdownSelector) {
+            $.ajax({
+                url: endpoint + "/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $(dropdownSelector).empty();
+                    $(dropdownSelector).append('<option value="">-- Select --</option>');
+                    $.each(data, function (key, entry) {
+                        $(dropdownSelector).append($('<option></option>').attr('value', entry.id).text(entry.name));
+                    });
+                    $(dropdownSelector).removeAttr("disabled");
+                },
+                error: function () {
+                    alert('Failed to fetch data. Please try again.');
+                }
+            });
         }
+
+        function resetSyllabus() {
+            $("#syllabus").val("");
+        }
+
+
+        function resetDropdown(selector) {
+            $(selector).empty().append('<option value="">-- Select --</option>').attr("disabled", "disabled");
+        }
+
     </script>
-}*@
+}

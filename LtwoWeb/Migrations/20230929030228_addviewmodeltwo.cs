@@ -5,7 +5,7 @@
 namespace LtwoWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class newmodel : Migration
+    public partial class addviewmodeltwo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,6 +70,7 @@ namespace LtwoWeb.Migrations
                     TrainingTitleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Syllabus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -83,60 +84,10 @@ namespace LtwoWeb.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Analyses",
-                columns: table => new
-                {
-                    AnalysisId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrainingTitleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Analyses", x => x.AnalysisId);
-                    table.ForeignKey(
-                        name: "FK_Analyses_TrainingTitles_TrainingTitleId",
-                        column: x => x.TrainingTitleId,
-                        principalTable: "TrainingTitles",
-                        principalColumn: "TrainingTitleId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Syllabuses",
-                columns: table => new
-                {
-                    SyllabusId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AnalysisId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Syllabuses", x => x.SyllabusId);
-                    table.ForeignKey(
-                        name: "FK_Syllabuses_Analyses_AnalysisId",
-                        column: x => x.AnalysisId,
-                        principalTable: "Analyses",
-                        principalColumn: "AnalysisId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Analyses_TrainingTitleId",
-                table: "Analyses",
-                column: "TrainingTitleId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_TrainingTypeId",
                 table: "Categories",
                 column: "TrainingTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Syllabuses_AnalysisId",
-                table: "Syllabuses",
-                column: "AnalysisId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TrainingTitles_CategoryId",
@@ -152,12 +103,6 @@ namespace LtwoWeb.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Syllabuses");
-
-            migrationBuilder.DropTable(
-                name: "Analyses");
-
             migrationBuilder.DropTable(
                 name: "TrainingTitles");
 
